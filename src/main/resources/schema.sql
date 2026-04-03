@@ -3,7 +3,6 @@ CREATE DATABASE spring_project;
 -- Create UUID extension (run this first)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-
 CREATE TABLE IF NOT EXISTS achievements
 (
     achievement_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),

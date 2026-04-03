@@ -25,12 +25,12 @@ public class S3Config {
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .endpointOverride(URI.create(endpoint)) // RustFS
+                .endpointOverride(URI.create(endpoint))
                 .region(Region.US_EAST_1)
                 .credentialsProvider(StaticCredentialsProvider.create(
                         AwsBasicCredentials.create(accessKey, secretKey)
                 ))
-                .forcePathStyle(true) // IMPORTANT for RustFS/MinIO
+                .forcePathStyle(true)
                 .build();
     }
 }
