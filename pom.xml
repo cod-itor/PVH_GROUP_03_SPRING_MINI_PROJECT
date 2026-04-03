@@ -74,7 +74,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-            <version>1.18.36</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -101,12 +100,7 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter-test</artifactId>
-            <version>4.0.1</version>
-            <scope>test</scope>
-        </dependency>
+
 
         <!--        spring jwt -->
         <dependency>
@@ -131,13 +125,13 @@
             <artifactId>modelmapper</artifactId>
             <version>3.2.2</version>
         </dependency>
-<!--        LoadingCache-->
+        <!--        LoadingCache-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>32.1.2-jre</version>
         </dependency>
-<!--        RustFS -->
+        <!--        RustFS -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
@@ -181,7 +175,6 @@
                                 <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
-                                    <version>1.18.36</version>
                                 </path>
                             </annotationProcessorPaths>
                         </configuration>
