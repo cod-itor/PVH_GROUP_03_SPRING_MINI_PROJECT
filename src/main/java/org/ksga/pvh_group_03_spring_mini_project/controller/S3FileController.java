@@ -42,7 +42,7 @@ public class S3FileController {
 
     @GetMapping("/preview-file/{file-name}")
     @Operation(summary = "Preview a file")
-    public ResponseEntity<Resource> getFileByFileName(@PathVariable("file-name") String fileName) {
+    public ResponseEntity<Resource> getFileByFileName(@PathVariable("file-name") @Valid String fileName) {
         Resource resource  = s3FileService.getFileByFileName(fileName);
 
         return ResponseEntity.ok()
@@ -50,14 +50,5 @@ public class S3FileController {
                 .body(resource);
     }
 
-//    @GetMapping("/download-file/{file-name}")
-//    public ResponseEntity<Resource> downloadFileByFileName(@PathVariable("file-name") String fileName) {
-//        Resource resource = s3FileService.getFileByFileName(fileName);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-//                .body(resource);
-//    }
 
 }
