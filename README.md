@@ -568,4 +568,154 @@ Response: HabitLog with updated AppUser data
 
 ---
 
+## 🐳 Docker Setup Guide
+
+Run Docker containers for Redis and RustFS in 3 easy steps!
+
+### 📋 What You Need
+
+1. **Docker Desktop** installed from https://www.docker.com/products/docker-desktop
+2. Open Command Prompt or PowerShell
+3. Go to your project folder: `D:\PVH_GROUP_03_SPRING_MINI_PROJECT`
+
+### ⚡ 3 Simple Steps
+
+#### **Step 1: Open Command Prompt**
+```cmd
+cd D:\PVH_GROUP_03_SPRING_MINI_PROJECT
+```
+
+#### **Step 2: Start All Services (ONE Command)**
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.redis.yml up -d
+```
+
+#### **Step 3: Verify Everything Works**
+```cmd
+docker ps
+```
+
+**You should see 2 containers running:**
+- `habit_tracker_redis` (Port 6379)
+- `spring_mini_project_group03` (Ports 9000, 9001)
+
+✅ **Done! Services are running.**
+
+### 🔍 Quick Check Commands
+
+#### Check if containers are running:
+```cmd
+docker ps
+```
+
+#### Check Redis is working:
+```cmd
+docker exec habit_tracker_redis redis-cli ping
+```
+*Should say: `PONG`*
+
+#### Check RustFS is working:
+```cmd
+curl http://localhost:9000
+```
+
+#### See what's happening (logs):
+```cmd
+docker logs habit_tracker_redis
+docker logs spring_mini_project_group03
+```
+
+### ⏹️ Stop Services
+
+#### Stop all containers:
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.redis.yml down
+```
+
+#### Restart all containers:
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.redis.yml restart
+```
+
+#### Delete everything (data too):
+```cmd
+docker-compose -f docker-compose.yml -f docker-compose.redis.yml down -v
+```
+
+### 📍 Where to Access Services
+
+| Service | Address |
+|---------|---------|
+| Redis | `localhost:6379` |
+| RustFS API | `http://localhost:9000` |
+| RustFS Console | `http://localhost:9001` |
+
+### 🚀 Run Spring Application
+
+After Docker containers are running:
+
+```cmd
+./mvnw spring-boot:run
+```
+
+Or build and run:
+```cmd
+./mvnw clean package
+java -jar target/PVH_GROUP_03_SPRING_MINI_PROJECT-0.0.1-SNAPSHOT.jar
+```
+
+Access your app at: `http://localhost:8080`
+
+### ❌ Common Problems & Fixes
+
+#### **Problem: "Port already in use"**
+- Kill the process using that port
+- Or use different port in docker-compose file
+
+#### **Problem: "Docker not running"**
+- Start Docker Desktop application
+- Wait 30 seconds
+- Try again
+
+#### **Problem: "Cannot connect to Docker daemon"**
+- Right-click Command Prompt → Run as Administrator
+- Try again
+
+#### **Problem: Container stops immediately**
+- Check logs: `docker logs spring_mini_project_group03`
+- Pull latest image: `docker pull rustfs/rustfs:latest`
+- Try again
+
+### 📚 All Useful Commands
+
+```cmd
+# Start services
+docker-compose -f docker-compose.yml -f docker-compose.redis.yml up -d
+
+# Stop services
+docker-compose -f docker-compose.yml -f docker-compose.redis.yml down
+
+# View all containers
+docker ps -a
+
+# View logs
+docker logs [container_name]
+
+# Connect to Redis shell
+docker exec -it habit_tracker_redis redis-cli
+
+# Clean up everything
+docker system prune -a
+```
+
+### ✅ Setup Checklist
+
+- [ ] Docker Desktop is running
+- [ ] Open Command Prompt in your project folder
+- [ ] Run: `docker-compose -f docker-compose.yml -f docker-compose.redis.yml up -d`
+- [ ] Check with: `docker ps`
+- [ ] All done! ✅
+
+---
+
 **Last Updated**: 04 April 2026 By Dita Rector
