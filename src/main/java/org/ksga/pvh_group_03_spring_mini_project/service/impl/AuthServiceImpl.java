@@ -3,6 +3,7 @@ package org.ksga.pvh_group_03_spring_mini_project.service.impl;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ksga.pvh_group_03_spring_mini_project.exception.NotFoundException;
 import org.ksga.pvh_group_03_spring_mini_project.exception.NotYetVerifiedException;
 import org.ksga.pvh_group_03_spring_mini_project.exception.UserAlreadyExistException;
 import org.ksga.pvh_group_03_spring_mini_project.helper.OtpHelper;
@@ -18,8 +19,10 @@ import org.ksga.pvh_group_03_spring_mini_project.service.AuthService;
 import org.ksga.pvh_group_03_spring_mini_project.service.OtpService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,16 +85,18 @@ public class AuthServiceImpl implements AuthService {
                     authRequest.getIdentifier(), authRequest.getPassword()
             ));
 
-            System.out.println(auth);
-
-
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            System.out.println();
-            System.out.println("NO: -> " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-            System.out.println();
-
             AppUser appUser = appUserRepository.findUserByIdentifier(authRequest.getIdentifier());
+
+            if (appUser == null) {
+                throw new NotFoundException("Invalid username, email, or password. Please check your credentials and try again.");
+            }
+
+            // Check for verification before login
+            if (!appUser.getIsVerified()) {
+                throw new NotYetVerifiedException("Your email address is not yet verified. Please verify your email address before logging in.");
+            }
 
             Map<String, Object> extraClaims = new HashMap<>();
             extraClaims.put("AppUserUUID", appUser.getAppUserId());
@@ -99,14 +104,9 @@ public class AuthServiceImpl implements AuthService {
             extraClaims.put("email", appUser.getEmail());
             extraClaims.put("is_verified", appUser.getIsVerified());
 
-//Check for verification before login
-            if (!appUser.getIsVerified()) {
-                throw new NotYetVerifiedException("Your email address is not yet verified. Please verify your email address before logging in.");
-            }
-
             return new TokenResponse(jwtUtils.generateToken(extraClaims, authRequest.getIdentifier()));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (AuthenticationException e) {
+            throw new NotFoundException("Invalid username, email, or password. Please check your credentials and try again.");
         }
     }
 

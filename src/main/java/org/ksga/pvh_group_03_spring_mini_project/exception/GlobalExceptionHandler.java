@@ -1,5 +1,6 @@
 package org.ksga.pvh_group_03_spring_mini_project.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -9,8 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.net.URI;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -89,20 +93,27 @@ public class GlobalExceptionHandler {
         return detail;
     }
 
-    // Handle validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problemDetail.setTitle("Validation Failed");
+    public ProblemDetail handleValidationException(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request
+    ) {
 
-        // Collect field validation errors
-        Map<String, String> errors = new HashMap<>();
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+
+        problemDetail.setType(URI.create("about:blank"));
+        problemDetail.setTitle("Bad Request");
+        problemDetail.setStatus(HttpStatus.BAD_REQUEST.value());
+        problemDetail.setInstance(URI.create(request.getRequestURI()));
+
+        Map<String, String> errors = new LinkedHashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        // Add errors to ProblemDetail as extra properties
         problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty("timestamp", Instant.now());
+
         return problemDetail;
     }
 
@@ -130,40 +141,4 @@ public class GlobalExceptionHandler {
 
         return problemDetail;
     }
-
-
-//    //for dto
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-//            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
-//        }
-//
-//        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-//        detail.setProperty("errors", errors);
-//        detail.setProperty("Timestamp", LocalDateTime.now());
-//
-//        return detail;
-//    }
-//
-//    //for method parameter
-//    @ExceptionHandler(HandlerMethodValidationException.class)
-//    public ProblemDetail handleMethodValidationException(HandlerMethodValidationException ex) {
-//
-//        Map<String, String> errors = new HashMap<>();
-//
-//        for (MessageSourceResolvable messageSourceResolvable : ex.getAllErrors()) {
-//            if (messageSourceResolvable.getCodes() != null) {
-//                errors.put(messageSourceResolvable.getCodes()[1]
-//                        .split("\\.")[1], messageSourceResolvable.getDefaultMessage());
-//            }
-//        }
-//        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-//        detail.setProperty("errors", errors);
-//        detail.setProperty("Timestamp", LocalDateTime.now());
-//
-//        return detail;
-//    }
-
 }
