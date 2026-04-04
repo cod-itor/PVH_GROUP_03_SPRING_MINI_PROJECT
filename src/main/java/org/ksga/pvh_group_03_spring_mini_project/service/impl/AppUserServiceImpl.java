@@ -14,6 +14,10 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
-        return appUserRepository.findUserByIdentifier(identifier);
+        UserDetails userDetails = appUserRepository.findUserByIdentifier(identifier);
+        if (userDetails == null) {
+            throw new UsernameNotFoundException("Invalid username, email, or password. Please check your credentials and try again.");
+        }
+        return userDetails;
     }
 }
