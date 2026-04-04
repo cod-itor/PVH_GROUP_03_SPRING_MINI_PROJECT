@@ -19,13 +19,15 @@ public interface AchievementRepository {
     @Select("select * from achievements offset #{offset} limit #{size}")
     List<Achievement> getAllAchievement(int offset, Integer size);
 
-    @ResultMap(("achievementMapper"))
+    @ResultMap("achievementMapper")
     @Select("""
             SELECT a.* FROM achievements a 
             INNER JOIN app_user_achievements ua ON a.achievement_id = ua.achievement_id 
             WHERE ua.app_user_id = #{appUserId} 
             ORDER BY ua.achieved_at DESC
             """)
-//    List<Achievement> getUserAchievements(UUID appUserId);
+
     List<Achievement> getUserAchievements(UUID appUserId, Integer offset, Integer size);
+
+    //    List<Achievement> getUserAchievements(UUID appUserId);
 }

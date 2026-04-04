@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ksga.pvh_group_03_spring_mini_project.exception.NotFoundException;
 import org.ksga.pvh_group_03_spring_mini_project.helper.AuthUtils;
+import org.ksga.pvh_group_03_spring_mini_project.model.entity.Achievement;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.AppUser;
+import org.ksga.pvh_group_03_spring_mini_project.model.entity.Habit;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.HabitLog;
 import org.ksga.pvh_group_03_spring_mini_project.model.request.HabitLogRequest;
 import org.ksga.pvh_group_03_spring_mini_project.repository.AchievementRepository;
@@ -32,64 +34,71 @@ public class HabitLogServiceImpl implements HabitLogService {
     @Override
     public HabitLog createHabitLog(HabitLogRequest habitLogRequest) {
         UUID appUserId = authUtils.getCurrentUserIdentifier();
-        
+
         AppUser appUser = appUserRepository.findUserByUUID(appUserId);
         if (appUser == null) {
             throw new NotFoundException("User not found!");
         }
-        
+
         UUID habitId = habitLogRequest.getHabitId();
         if (habitId == null) {
             throw new NotFoundException("Habit ID cannot be null");
         }
-        
+
         UUID habitLogId = UUID.randomUUID();
         HabitLog habitLog = HabitLog.builder()
                 .habitLogId(habitLogId)
                 .logDate(LocalDateTime.now())
                 .status("COMPLETED")
-                .HabitId(habitId)
+                .habitId(habitId)
                 .xpEarned(xpPerCompletion)
                 .build();
-        
-        habitLogRepository.insertHabitLogRecord(habitLog);
-        
+
+
+//        HabitLog habitLog1 = habitLogRepository.insertHabitLogRecord(habitLog);
+//        // insertUserAchievement
+//        for (Achievement achievement : achievementRepository.getAllAchievement(0, Integer.MAX_VALUE)) {
+//            if (achievement.getXpRequired() <= (appUser.getXp() != null ? appUser.getXp() : 0) + xpPerCompletion) {
+//                achievementRepository.insertUserAchievement(appUserId, achievement.getAchievementId());
+//            }
+//        }
+
         int currentXp = appUser.getXp() != null ? appUser.getXp() : 0;
         int newXp = currentXp + xpPerCompletion;
         int newLevel = calculateLevel(newXp);
         appUserRepository.updateUserXp(appUserId, newXp, newLevel);
-        
+
         HabitLog createdLog = habitLogRepository.findByHabitLogId(habitLogId);
         if (createdLog == null) {
             throw new NotFoundException("Failed to create habit log");
         }
-        
+
         return createdLog;
     }
 
     @Override
     public List<HabitLog> getHabitLogsByHabitId(UUID habitId) {
         UUID appUserId = authUtils.getCurrentUserIdentifier();
-        
+
         AppUser appUser = appUserRepository.findUserByUUID(appUserId);
         if (appUser == null) {
             throw new NotFoundException("User not found!");
         }
-        
+
         if (habitId == null) {
             throw new NotFoundException("Habit ID cannot be null");
         }
-        
+
         List<HabitLog> habitLogs = habitLogRepository.findByHabitId(habitId);
-        
+
         if (habitLogs == null || habitLogs.isEmpty()) {
             throw new NotFoundException("No habit logs found for habit ID: " + habitId);
         }
-        
+
         return habitLogs;
     }
-    
+
     private int calculateLevel(int totalXp) {
-        return (totalXp / 100) + 1;
+        return (totalXp / 100);
     }
 }
