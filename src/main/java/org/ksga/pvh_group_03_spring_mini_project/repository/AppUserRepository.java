@@ -2,6 +2,7 @@ package org.ksga.pvh_group_03_spring_mini_project.repository;
 
 import org.apache.ibatis.annotations.*;
 import org.ksga.pvh_group_03_spring_mini_project.beanConfig.UUIDTypeHandler;
+import org.ksga.pvh_group_03_spring_mini_project.model.entity.Achievement;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.AppUser;
 import org.ksga.pvh_group_03_spring_mini_project.model.request.AppUserRequest;
 
@@ -48,4 +49,6 @@ public interface AppUserRepository {
 
     @Select("SELECT xp from app_users where app_user_id = #{userUUID}")
     Integer getUserXp(@Param("userUUID") UUID userUUID);
+
+    Achievement getUserAchievement(int offset, Integer size, UUID achievementId);
 }
