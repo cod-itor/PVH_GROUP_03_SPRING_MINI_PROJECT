@@ -1,6 +1,7 @@
 package org.ksga.pvh_group_03_spring_mini_project.repository;
 
 import org.apache.ibatis.annotations.*;
+import org.ksga.pvh_group_03_spring_mini_project.beanConfig.UUIDTypeHandler;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.Habit;
 import org.ksga.pvh_group_03_spring_mini_project.model.request.HabitRequest;
 
@@ -33,7 +34,7 @@ public interface HabitRepository {
 
     @ResultMap("habitMapper")
     @Select("""
-        SELECT * FROM habits WHERE habit_id = #{habitId} AND app_user_id = #{appUserId};
+        SELECT * FROM habits WHERE habit_id = #{habitId};
     """)
     Habit getHabitById(UUID habitId, UUID appUserId);
 

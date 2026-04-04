@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ksga.pvh_group_03_spring_mini_project.model.response.HabitResponse;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,7 +18,7 @@ public class HabitLog {
     private LocalDateTime logDate;
     private String status;
     @JsonIgnore
-    private UUID HabitId;
+    private UUID habitId;
     private Integer xpEarned;
-    private HabitResponse habit;
+    private Habit habit;
 }
