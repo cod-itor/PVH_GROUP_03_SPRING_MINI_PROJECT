@@ -1,10 +1,14 @@
 package org.ksga.pvh_group_03_spring_mini_project.service.impl;
 
-import lombok.AllArgsConstructor;
-import org.ksga.pvh_group_03_spring_mini_project.exception.HabitLogStatusException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ksga.pvh_group_03_spring_mini_project.exception.NotFoundException;
+import org.ksga.pvh_group_03_spring_mini_project.helper.AuthUtils;
+import org.ksga.pvh_group_03_spring_mini_project.model.entity.AppUser;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.HabitLog;
 import org.ksga.pvh_group_03_spring_mini_project.model.request.HabitLogRequest;
+import org.ksga.pvh_group_03_spring_mini_project.repository.AchievementRepository;
+import org.ksga.pvh_group_03_spring_mini_project.repository.AppUserRepository;
 import org.ksga.pvh_group_03_spring_mini_project.repository.HabitLogRepository;
 import org.ksga.pvh_group_03_spring_mini_project.service.HabitLogService;
 import org.springframework.stereotype.Service;
@@ -13,39 +17,48 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class HabitLogServiceImpl implements HabitLogService {
 
     private final HabitLogRepository habitLogRepository;
+    private final AppUserRepository appUserRepository;
+    private final AuthUtils authUtils;
+    private final AchievementRepository achievementRepository;
+
+    private static final int xpPerCompletion = 10;
 
     @Override
     public HabitLog createHabitLog(HabitLogRequest habitLogRequest) {
-        // Validate habit log status
-        String status = habitLogRequest.getStatus().toUpperCase();
-        if (!isValidStatus(status)) {
-            throw new HabitLogStatusException("Invalid status: " + status + ". Allowed values: COMPLETED, SKIPPED, PENDING");
+        UUID appUserId = authUtils.getCurrentUserIdentifier();
+        
+        AppUser appUser = appUserRepository.findUserByUUID(appUserId);
+        if (appUser == null) {
+            throw new NotFoundException("User not found!");
         }
         
         UUID habitId = habitLogRequest.getHabitId();
         if (habitId == null) {
-            throw new HabitLogStatusException("Habit ID cannot be null");
+            throw new NotFoundException("Habit ID cannot be null");
         }
         
-        // Create habit log entity
         UUID habitLogId = UUID.randomUUID();
         HabitLog habitLog = HabitLog.builder()
                 .habitLogId(habitLogId)
                 .logDate(LocalDateTime.now())
-                .status(status)
+                .status("COMPLETED")
                 .HabitId(habitId)
-                .xpEarned(0) // XP will be handled by achievement system
+                .xpEarned(xpPerCompletion)
                 .build();
         
-        // Insert into database
         habitLogRepository.insertHabitLogRecord(habitLog);
         
-        // Fetch and return the created habit log with full details
+        int currentXp = appUser.getXp() != null ? appUser.getXp() : 0;
+        int newXp = currentXp + xpPerCompletion;
+        int newLevel = calculateLevel(newXp);
+        appUserRepository.updateUserXp(appUserId, newXp, newLevel);
+        
         HabitLog createdLog = habitLogRepository.findByHabitLogId(habitLogId);
         if (createdLog == null) {
             throw new NotFoundException("Failed to create habit log");
@@ -56,12 +69,17 @@ public class HabitLogServiceImpl implements HabitLogService {
 
     @Override
     public List<HabitLog> getHabitLogsByHabitId(UUID habitId) {
-        // Verify habit exists
-        if (habitId == null) {
-            throw new HabitLogStatusException("Habit ID cannot be null");
+        UUID appUserId = authUtils.getCurrentUserIdentifier();
+        
+        AppUser appUser = appUserRepository.findUserByUUID(appUserId);
+        if (appUser == null) {
+            throw new NotFoundException("User not found!");
         }
         
-        // Fetch habit logs
+        if (habitId == null) {
+            throw new NotFoundException("Habit ID cannot be null");
+        }
+        
         List<HabitLog> habitLogs = habitLogRepository.findByHabitId(habitId);
         
         if (habitLogs == null || habitLogs.isEmpty()) {
@@ -71,8 +89,7 @@ public class HabitLogServiceImpl implements HabitLogService {
         return habitLogs;
     }
     
-    // Helper method to validate status
-    private boolean isValidStatus(String status) {
-        return status.equals("COMPLETED") || status.equals("SKIPPED") || status.equals("PENDING");
+    private int calculateLevel(int totalXp) {
+        return (totalXp / 100) + 1;
     }
 }

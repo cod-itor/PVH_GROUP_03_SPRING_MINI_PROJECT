@@ -2,7 +2,9 @@ package org.ksga.pvh_group_03_spring_mini_project.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.ksga.pvh_group_03_spring_mini_project.model.request.ProfileRequest;
 import org.ksga.pvh_group_03_spring_mini_project.model.response.ApiResponse;
 import org.ksga.pvh_group_03_spring_mini_project.model.response.AppUserResponse;
 import org.ksga.pvh_group_03_spring_mini_project.service.ProfileService;
@@ -30,7 +32,33 @@ public class ProfileController {
                 .status(HttpStatus.OK)
                 .payload(user)
                 .build();
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @Operation(summary = "Update user profile",description = "Update the username and image of user.")
+    @PutMapping
+    public ResponseEntity<ApiResponse<AppUserResponse>> updateProfile(@RequestBody @Valid ProfileRequest profileRequest){
+        AppUserResponse user = profileService.updateProfile(profileRequest);
+
+        ApiResponse<AppUserResponse> response = ApiResponse.<AppUserResponse>builder()
+                .success(true)
+                .message("Update profile successfully")
+                .status(HttpStatus.OK)
+                .payload(user)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Delete user profile",description = "Delete user.")
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<Void>> deleteProfile(){
+        profileService.deleteProfile();
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .success(true)
+                .message("Delete User successfully")
+                .status(HttpStatus.OK)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }
