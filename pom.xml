@@ -71,11 +71,6 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>annotationProcessor</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail-test</artifactId>
             <scope>test</scope>
@@ -149,6 +144,18 @@
             <version>2.5.4</version>
         </dependency>
 
+        <!-- Spring Data Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Twilio -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>8.28.0</version> <!-- Use the latest Twilio version -->
+        </dependency>
     </dependencies>
 
     <build>
@@ -158,8 +165,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
                     </excludes>
                 </configuration>
             </plugin>
@@ -175,8 +180,6 @@
                         </goals>
                         <configuration>
                             <annotationProcessorPaths>
-                                <groupId>org.projectlombok</groupId>
-                                <artifactId>lombok</artifactId>
                             </annotationProcessorPaths>
                         </configuration>
                     </execution>
