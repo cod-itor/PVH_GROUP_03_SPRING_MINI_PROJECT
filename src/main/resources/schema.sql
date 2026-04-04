@@ -69,3 +69,12 @@ VALUES
     ('XP Overlord', 'Awarded for earning 5000 XP in total.', 'xp_overlord_badge.png', 5000),
     ('7-Day Streak Achievement', 'Awarded when a user completes a habit for 7 consecutive days.', '7_day_streak_achievement.png', 50),
     ('Level 10 Reached', 'Awarded when a user reaches level 10.', 'level_10_badge.png', 1000);
+
+
+INSERT INTO habits (title, description, frequency, app_user_id)
+VALUES (
+           'Coding Practice',
+           'Solve one LeetCode problem',
+           'Daily',
+           (SELECT app_user_id FROM app_users WHERE email = 'hiemsreynit282@gmail.com' LIMIT 1)
+       );
