@@ -3,6 +3,8 @@ package org.ksga.pvh_group_03_spring_mini_project.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.ksga.pvh_group_03_spring_mini_project.helper.AuthUtils;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.Habit;
@@ -28,7 +30,8 @@ public class HabitController {
     @Operation(summary = "Get all habits")
     @GetMapping
     public ResponseEntity<ApiResponse<List<Habit>>> getAllHabits(
-            @RequestParam(defaultValue = "1") Integer page,
+            @Min (value = 1, message = "must be greater than 0")@RequestParam(defaultValue = "1") Integer page,
+            @Min(value = 1, message = "must be greater than 0")
             @RequestParam(defaultValue = "10") Integer size
     ) {
         List<Habit> habits = habitService.getAllHabits(page, size);
