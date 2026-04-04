@@ -2,6 +2,7 @@ package org.ksga.pvh_group_03_spring_mini_project.repository;
 
 import org.apache.ibatis.annotations.*;
 import org.ksga.pvh_group_03_spring_mini_project.beanConfig.UUIDTypeHandler;
+import org.ksga.pvh_group_03_spring_mini_project.model.request.ProfileRequest;
 import org.ksga.pvh_group_03_spring_mini_project.model.response.AppUserResponse;
 
 import java.util.UUID;
@@ -19,4 +20,15 @@ public interface ProfileRepository {
             select * from app_users where app_user_id= #{userUUID};
             """)
     AppUserResponse getUserProfile(@Param("userUUID") UUID userUUID);
+
+    @Select("""
+        UPDATE app_users SET username = #{req.username}, profile_image = #{req.profileImageUrl} WHERE app_user_id = #{appUserId} RETURNING *
+    """)
+    @ResultMap("User-Profile")
+    AppUserResponse updateProfile(UUID appUserId,@Param("req") ProfileRequest profileRequest);
+
+    @Delete("""
+        DELETE FROM app_users WHERE app_user_id = #{appUserId};
+    """)
+    void deleteProfile(UUID appUserId);
 }
