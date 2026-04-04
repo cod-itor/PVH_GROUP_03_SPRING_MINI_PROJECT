@@ -36,6 +36,10 @@ CREATE TABLE IF NOT EXISTS app_user_achievements
     CONSTRAINT fk_achievement FOREIGN KEY (achievement_id) REFERENCES achievements (achievement_id) ON DELETE CASCADE
 );
 
+-- -- insert app_user_achievements
+-- INSERT INTO app_user_achievements (app_user_id, achievement_id)
+-- VALUES ('4929214f-3cc6-4d78-82aa-b75f0b6ec277','24072cb0-927f-467a-a0e2-0fb6b1335642');
+
 CREATE TABLE IF NOT EXISTS habits
 (
     habit_id    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
