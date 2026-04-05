@@ -36,10 +36,6 @@ CREATE TABLE IF NOT EXISTS app_user_achievements
     CONSTRAINT fk_achievement FOREIGN KEY (achievement_id) REFERENCES achievements (achievement_id) ON DELETE CASCADE
 );
 
--- -- insert app_user_achievements
--- INSERT INTO app_user_achievements (app_user_id, achievement_id)
--- VALUES ('4929214f-3cc6-4d78-82aa-b75f0b6ec277','24072cb0-927f-467a-a0e2-0fb6b1335642');
-
 CREATE TABLE IF NOT EXISTS habits
 (
     habit_id    uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -73,12 +69,3 @@ VALUES
     ('XP Overlord', 'Awarded for earning 5000 XP in total.', 'xp_overlord_badge.png', 5000),
     ('7-Day Streak Achievement', 'Awarded when a user completes a habit for 7 consecutive days.', '7_day_streak_achievement.png', 50),
     ('Level 10 Reached', 'Awarded when a user reaches level 10.', 'level_10_badge.png', 1000);
-
-
-INSERT INTO habits (title, description, frequency, app_user_id)
-VALUES (
-           'Coding Practice',
-           'Solve one LeetCode problem',
-           'Daily',
-           (SELECT app_user_id FROM app_users WHERE email = 'hiemsreynit282@gmail.com' LIMIT 1)
-       );
