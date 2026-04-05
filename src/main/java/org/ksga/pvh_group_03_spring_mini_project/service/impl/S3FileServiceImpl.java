@@ -58,7 +58,7 @@ public class S3FileServiceImpl implements S3FileService {
         }
 
         String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/v2/files/preview-file/" + fileName)
+                .path("/api/v1/files/preview-file/" + fileName)
                 .toUriString();
 
         return FileMetadata.builder()
