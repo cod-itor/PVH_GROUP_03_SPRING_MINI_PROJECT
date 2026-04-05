@@ -25,7 +25,7 @@ public class AchievementController {
 
     private final AchievementService achievementService;
 
-    @Operation(summary = "Get user profile", description = "Fetches the details of the currently authenticated user.")
+    @Operation(summary = "Get all achievements", description = "Fetches the details of the currently authenticated user.")
     @GetMapping
     public ResponseEntity<ApiResponse<List<Achievement>>> getAllAchievement (@RequestParam(defaultValue = "1")
                                                                                  @Min(value = 1, message = "Page number must be greater than 0") Integer page,
@@ -41,7 +41,7 @@ public class AchievementController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    @Operation(summary = "Get user achievements", description = "Fetches achievements earned by the currently authenticated user")
+    @Operation(summary = "Get achievements by App User ID", description = "Fetches achievements earned by the currently authenticated user")
     @GetMapping("/{app-users}")
     public ResponseEntity<ApiResponse<List<Achievement>>> getUserAchievements(@RequestParam(defaultValue = "1")
                                                                               @Min(value = 1, message = "Page number must be greater than 0") Integer page,

@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface HabitLogService {
     HabitLog createHabitLog(HabitLogRequest habitLogRequest);
-    List<HabitLog> getHabitLogsByHabitId(UUID habitId);
+    List<HabitLog> getHabitLogsByHabitId(UUID habitId,Integer page , Integer size);
 }

@@ -31,6 +31,6 @@ public interface HabitLogRepository {
     HabitLog findByHabitLogId(UUID habitLogId);
     
     @ResultMap("habitLogMapper")
-    @Select("SELECT hl.habit_log_id, hl.log_date, hl.status, hl.xp_earned, hl.habit_id FROM habit_logs hl WHERE hl.habit_id = #{habitId}")
-    List<HabitLog> findByHabitId(UUID habitId);
+    @Select("SELECT hl.habit_log_id, hl.log_date, hl.status, hl.xp_earned, hl.habit_id FROM habit_logs hl WHERE hl.habit_id = #{habitId} OFFSET #{offset} LIMIT #{size}")
+    List<HabitLog> findByHabitId(UUID habitId,Integer offset , Integer size);
 }
