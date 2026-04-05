@@ -2,6 +2,7 @@ package org.ksga.pvh_group_03_spring_mini_project.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.ksga.pvh_group_03_spring_mini_project.model.entity.HabitLog;
 import org.ksga.pvh_group_03_spring_mini_project.model.request.HabitLogRequest;
@@ -43,9 +44,11 @@ public class HabitLogController {
     }
 
     @GetMapping("/{habit-id}")
-    public ResponseEntity<ApiResponse<List<HabitLog>>> getHabitLogsByHabitId(@PathVariable("habit-id") UUID habitId) {
+    public ResponseEntity<ApiResponse<List<HabitLog>>> getHabitLogsByHabitId(   @Min(value = 1, message = "must be greater than 0")@RequestParam(defaultValue = "1") Integer page,
+                                                                                  @Min(value = 1, message = "must be greater than 0")
+                                                                                  @RequestParam(defaultValue = "10") Integer size,@PathVariable("habit-id") UUID habitId) {
         try {
-            List<HabitLog> habitLogs = habitLogService.getHabitLogsByHabitId(habitId);
+            List<HabitLog> habitLogs = habitLogService.getHabitLogsByHabitId(habitId ,page ,size);
             ApiResponse<List<HabitLog>> response = ApiResponse.<List<HabitLog>>builder()
                     .success(true)
                     .message("Habit logs retrieved successfully!")

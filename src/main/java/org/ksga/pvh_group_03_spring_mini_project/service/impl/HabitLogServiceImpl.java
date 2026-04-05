@@ -75,7 +75,7 @@ public class HabitLogServiceImpl implements HabitLogService {
     }
 
     @Override
-    public List<HabitLog> getHabitLogsByHabitId(UUID habitId) {
+    public List<HabitLog> getHabitLogsByHabitId(UUID habitId,Integer page , Integer size) {
         UUID appUserId = authUtils.getCurrentUserIdentifier();
 
         AppUser appUser = appUserRepository.findUserByUUID(appUserId);
@@ -86,8 +86,9 @@ public class HabitLogServiceImpl implements HabitLogService {
         if (habitId == null) {
             throw new NotFoundException("Habit ID cannot be null");
         }
+        int offset = size * (page - 1);
 
-        List<HabitLog> habitLogs = habitLogRepository.findByHabitId(habitId);
+        List<HabitLog> habitLogs = habitLogRepository.findByHabitId(habitId ,offset ,size);
 
         if (habitLogs == null || habitLogs.isEmpty()) {
             throw new NotFoundException("No habit logs found for habit ID: " + habitId);
